@@ -3,7 +3,7 @@ pipeline {
     environment {
         MAVEN_ARGS=" -e clean install"
         dockerContainerName = 'bookapi'
-        dockerImageName == 'bookapi-api'
+        dockerImageName = 'bookapi-api'
     }
     stages {
         stage('Build') {
