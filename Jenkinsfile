@@ -18,7 +18,7 @@ pipeline {
             steps {
                 sh 'docker ps -f name=${dockerContainerName} -q | xargs --no-run-if-empty docker container stop'
                 sh 'docker container ls -a -f name=${dockerContainerName} -q | xargs -r docker container rm'
-                sh 'docker images -q --filter=reference=${dockerContainerName} | xargs --no-run-if-empty docker rmi -f'
+                sh 'docker images -q --filter=reference=${dockerImagesName} | xargs --no-run-if-empty docker rmi -f'
 
             }
         }
