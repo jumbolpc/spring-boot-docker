@@ -33,7 +33,7 @@ services:
     ports:
       - "9090:9090"
     depends_on:
-      - productondb
+      - productiondb
     networks:
       - spring_production_network
 volumes:
