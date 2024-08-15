@@ -1,0 +1,41 @@
+networks:
+  spring_production_network:
+    name: spring_production_network
+    driver: bridge
+
+services:
+  productiondb:
+    image: postgres:15.2
+    container_name: bookdb_production
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: bookdb
+    volumes:
+      - ./pgproductiondb:/var/lib/postgresql/data
+    ports:
+      - "8432:5432"
+    networks:
+      - spring_production_network
+  productionapi:
+    image: "book_api_production" 
+    build: 
+      context: .
+      dockerfile: Dockerfile-production
+    container_name: bookapi_production
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://productiondb:5432/bookdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD123456
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    ports:
+      - "9090:9090"
+    depends_on:
+      - productondb
+    networks:
+      - spring_production_network
+volumes:
+  pgproductiondb:
+    driver: local

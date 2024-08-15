@@ -1,0 +1,41 @@
+networks:
+  spring_staging_network:
+    name: spring_staging_network
+    driver: bridge
+
+services:
+  stagingdb:
+    image: postgres:15.2
+    container_name: bookdb_staging
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: bookdb
+    volumes:
+      - ./pgstagingdb:/var/lib/postgresql/data
+    ports:
+      - "7432:5432"
+    networks:
+      - spring_staging_network
+  stagingapi:
+    image: "book_api_staging"
+    build: 
+      context: .
+      dockerfile: Dockerfile-staging
+    container_name: bookapi_staging
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stagingdb:5432/bookdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD123456
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    ports:
+      - "8090:8090"
+    depends_on:
+      - stagingdb
+    networks:
+      - spring_staging_network
+volumes:
+  pgstagingdb:
+    driver: local
